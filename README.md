@@ -1,1 +1,1 @@
-Following this video series : https://www.youtube.com/watch?v=mAbG8Oi-SvQ
+Following (kinda) this video series : https://www.youtube.com/watch?v=mAbG8Oi-SvQ
