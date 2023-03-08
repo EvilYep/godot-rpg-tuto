@@ -8,6 +8,7 @@ onready var animation_state = animation_tree.get("parameters/playback")
 
 const ACCELERATION := 500
 const MAX_SPEED := 100
+const ROLL_SPEED := 135
 const FRICTION = 500
 
 enum STATE {
@@ -20,6 +21,7 @@ enum STATE {
 var state = STATE.RUN 
 var direction := Vector2.ZERO setget set_direction, get_direction
 var velocity : Vector2
+var roll_vector : Vector2
 
 #### ACCESSORS ####
 
@@ -41,7 +43,7 @@ func _process(_delta: float) -> void:
 		STATE.RUN:
 			_move_state()
 		STATE.ROLL:
-			pass
+			_roll_state()
 		STATE.ATTACK:
 			_attack_state()
 
@@ -57,29 +59,46 @@ func _move_state() -> void:
 	set_direction(direction.limit_length())
 	
 	if direction != Vector2.ZERO:
+		roll_vector = direction
 		animation_tree.set("parameters/Idle/blend_position", direction)
 		animation_tree.set("parameters/Run/blend_position", direction)
 		animation_tree.set("parameters/Attack/blend_position", direction)
+		animation_tree.set("parameters/Roll/blend_position", direction)
 		animation_state.travel("Run")
 		velocity = velocity.move_toward(direction * MAX_SPEED, ACCELERATION)
 	else:
 		animation_state.travel("Idle")
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION)
 	
-	var __ = move_and_slide(velocity)
+	_move()
+	
+	if Input.is_action_just_pressed("roll"):
+		state = STATE.ROLL
 	
 	if Input.is_action_just_pressed("attack"):
 		state = STATE.ATTACK
+
+func _roll_state() -> void:
+	velocity = roll_vector * ROLL_SPEED
+	animation_state.travel("Roll")
+	_move()
 
 func _attack_state() -> void:
 	velocity = Vector2.ZERO
 	animation_state.travel("Attack")
 
+func _move() -> void:
+	var __ = move_and_slide(velocity)
+
 #### INPUTS ####
 
 #### SIGNAL RESPONSES ####
 
-func attack_animation_finished():
+func attack_animation_finished() -> void:
+	velocity = velocity / 2
+	state = STATE.RUN
+
+func roll_animation_finished() -> void:
 	state = STATE.RUN
 
 # This code is ugly AF, I know
