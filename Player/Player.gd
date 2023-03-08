@@ -36,7 +36,7 @@ func get_direction() -> Vector2: return direction
 func _ready() -> void:
 	animation_tree.active = true
 
-func _physics_process(_delta: float) -> void:
+func _process(_delta: float) -> void:
 	match state :
 		STATE.RUN:
 			_move_state()
