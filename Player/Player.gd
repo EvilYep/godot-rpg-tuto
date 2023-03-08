@@ -5,6 +5,7 @@ class_name Player
 onready var animation_player: AnimationPlayer = $AnimationPlayer
 onready var animation_tree: AnimationTree = $AnimationTree
 onready var animation_state = animation_tree.get("parameters/playback")
+onready var sword_hitbox = $HitboxPivot/SwordHitBox
 
 const ACCELERATION := 500
 const MAX_SPEED := 100
@@ -60,6 +61,7 @@ func _move_state() -> void:
 	
 	if direction != Vector2.ZERO:
 		roll_vector = direction
+		sword_hitbox.knockback_direction = direction
 		animation_tree.set("parameters/Idle/blend_position", direction)
 		animation_tree.set("parameters/Run/blend_position", direction)
 		animation_tree.set("parameters/Attack/blend_position", direction)
