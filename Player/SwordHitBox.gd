@@ -1,3 +1,3 @@
-extends Area2D
+extends "res://Hitboxes/HitBox.gd"
 
 var knockback_direction = Vector2.ZERO
