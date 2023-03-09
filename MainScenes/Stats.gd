@@ -2,19 +2,25 @@ extends Node
 
 class_name Stats
 
-export var max_health : int = 1 setget set_max_health, get_max_health
-onready var health :int = max_health setget set_health, get_health
+export(int) var max_health = 4 setget set_max_health, get_max_health
+var health :int = max_health setget set_health, get_health
 
+signal health_changed(health)
+signal max_health_changed(health)
 signal no_health
 
 func set_max_health(value: int) -> void:
-	if max_health != value:
-		max_health = value
+	max_health = value
+	self.health = int(min(health, max_health))
+	emit_signal("max_health_changed", value)
 func get_max_health() -> int: return max_health
 
 func set_health(value: int) -> void:
-	if health != value:
-		health = value
-		if health <= 0:
-			emit_signal("no_health")
+	health = int(clamp(value, 0, max_health))
+	emit_signal("health_changed", value)
+	if health <= 0:
+		emit_signal("no_health")
 func get_health() -> int: return health
+
+func _ready() -> void:
+	self.health = max_health

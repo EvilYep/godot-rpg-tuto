@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=2]
+[gd_scene load_steps=71 format=2]
 
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://World/Bush.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://MainScenes/World.gd" type="Script" id=7]
 [ext_resource path="res://World/Grass.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Enemies/Bat.tscn" type="PackedScene" id=9]
+[ext_resource path="res://UI/HealthUI.tscn" type="PackedScene" id=10]
 
 [sub_resource type="OpenSimplexNoise" id=101]
 
@@ -666,3 +667,5 @@ position = Vector2( 96, 96 )
 __meta__ = {
 "_edit_group_": true
 }
+
+[node name="HealthUI" parent="." instance=ExtResource( 10 )]

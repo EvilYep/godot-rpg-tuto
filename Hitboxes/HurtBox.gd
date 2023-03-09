@@ -38,4 +38,4 @@ func _on_HurtBox_invincibility_ended() -> void:
 	set_deferred("monitorable", false)
 
 func _on_HurtBox_invincibility_started() -> void:
-	monitorable = true
+	set_deferred("monitorable", true)
