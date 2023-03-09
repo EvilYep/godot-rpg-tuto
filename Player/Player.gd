@@ -3,6 +3,7 @@ extends KinematicBody2D
 class_name Player
 
 onready var animation_player: AnimationPlayer = $AnimationPlayer
+onready var blink_animation_player: AnimationPlayer = $BlinkAnimationPlayer
 onready var animation_tree: AnimationTree = $AnimationTree
 onready var animation_state = animation_tree.get("parameters/playback")
 onready var sword_hitbox = $HitboxPivot/SwordHitBox
@@ -110,6 +111,12 @@ func roll_animation_finished() -> void:
 
 # This code is ugly AF, I know
 
-func _on_HurtBox_area_entered(_area: Area2D) -> void:
-	stats.health -= 1
+func _on_HurtBox_area_entered(area: Area2D) -> void:
+	stats.health -= area.damage
 	hurt_box.start_invincibility(0.5)
+
+func _on_HurtBox_invincibility_started() -> void:
+	blink_animation_player.play("Start")
+
+func _on_HurtBox_invincibility_ended() -> void:
+	blink_animation_player.play("Stop")

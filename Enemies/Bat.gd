@@ -4,11 +4,13 @@ class_name Bat
 
 var death_FX_scene = preload("res://Effects/EnemyDeathEffect.tscn")
 var death_FX
+onready var animation_player: AnimationPlayer = $AnimationPlayer
 onready var sprite = $AnimatedSprite
 onready var player_detection_zone: Area2D = $PlayerDetectionZone
 onready var stats: Node = $Stats
 onready var soft_collision: Area2D = $SoftCollision
 onready var wander_controller: Node2D = $WanderController
+onready var hurt_box: Area2D = $HurtBox
 
 export var acceleration := 300
 export var max_speed := 50
@@ -86,7 +88,14 @@ func _create_death_FX() -> void:
 func _on_HurtBox_area_entered(area: Area2D) -> void:
 	knockback =  area.knockback_direction * 120
 	stats.health -= area.damage
+	hurt_box.start_invincibility(0.4)
 
 func _on_Stats_no_health() -> void:
 	_create_death_FX()
 	queue_free()
+
+func _on_HurtBox_invincibility_started() -> void:
+	animation_player.play("Start")
+
+func _on_HurtBox_invincibility_ended() -> void:
+	animation_player.play("Stop")
