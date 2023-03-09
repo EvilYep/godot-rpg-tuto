@@ -22,7 +22,7 @@ enum STATE {
 var state = STATE.RUN 
 var direction := Vector2.ZERO setget set_direction, get_direction
 var velocity : Vector2
-var roll_vector : Vector2
+var roll_vector := Vector2.DOWN
 
 #### ACCESSORS ####
 
