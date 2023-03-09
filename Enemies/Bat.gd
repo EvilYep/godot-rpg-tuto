@@ -7,6 +7,7 @@ var death_FX
 onready var sprite = $AnimatedSprite
 onready var player_detection_zone: Area2D = $PlayerDetectionZone
 onready var stats: Node = $Stats
+onready var soft_collision: Area2D = $SoftCollision
 
 export var acceleration := 300
 export var max_speed := 50
@@ -51,6 +52,10 @@ func chase(delta) -> void:
 		velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
 		
 		sprite.flip_h = velocity.x < 0
+		
+		if soft_collision.is_colliding():
+			velocity += soft_collision.get_push_vector() * delta * 400
+		
 		var __ = move_and_slide(velocity)
 
 func _create_death_FX() -> void:
