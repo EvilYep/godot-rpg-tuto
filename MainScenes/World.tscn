@@ -578,11 +578,16 @@ points = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
 script = ExtResource( 7 )
 perlin_noise = SubResource( 101 )
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 224, 48 )
+current = true
+smoothing_enabled = true
+
 [node name="Background" type="Sprite" parent="."]
 position = Vector2( 160, 90 )
 texture = ExtResource( 3 )
 region_enabled = true
-region_rect = Rect2( 0, 0, 320, 180 )
+region_rect = Rect2( 0, 0, 640, 416 )
 
 [node name="WaterBedTileMap" type="TileMap" parent="."]
 tile_set = SubResource( 97 )
@@ -613,6 +618,9 @@ tile_data = PoolIntArray( -1, 0, 0, -65536, 0, 1, -65535, 0, 1, -65534, 0, 2, -6
 
 [node name="Player" parent="YSort" instance=ExtResource( 1 )]
 position = Vector2( 224, 48 )
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="YSort/Player"]
+remote_path = NodePath("../../../Camera2D")
 
 [node name="Bat" parent="YSort" instance=ExtResource( 9 )]
 position = Vector2( 80, 50 )
@@ -683,7 +691,9 @@ position = Vector2( 272, 56 )
 [node name="Tree4" parent="YSort/YSort" instance=ExtResource( 11 )]
 position = Vector2( 224, 104 )
 
-[node name="HealthUI" parent="." instance=ExtResource( 10 )]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HealthUI" parent="CanvasLayer" instance=ExtResource( 10 )]
 margin_left = 3.0
 margin_top = 3.0
 margin_right = 72.0
