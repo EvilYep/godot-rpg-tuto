@@ -8,6 +8,7 @@ onready var sprite = $AnimatedSprite
 onready var player_detection_zone: Area2D = $PlayerDetectionZone
 onready var stats: Node = $Stats
 onready var soft_collision: Area2D = $SoftCollision
+onready var wander_controller: Node2D = $WanderController
 
 export var acceleration := 300
 export var max_speed := 50
@@ -24,7 +25,7 @@ var velocity := Vector2.ZERO
 var knockback = Vector2.ZERO
 
 func _ready() -> void:
-	pass
+	state = pick_random_state([STATE.IDLE, STATE.WANDER])
 
 func _physics_process(delta: float) -> void:
 	knockback = knockback.move_toward(Vector2.ZERO, 200 * delta)
@@ -34,29 +35,48 @@ func _physics_process(delta: float) -> void:
 		STATE.IDLE:
 			velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 			seek_player()
+			if wander_controller.get_time_left() == 0:
+				reset_state()
+			
 		STATE.WANDER:
-			pass
+			seek_player()
+			if wander_controller.get_time_left() == 0:
+				reset_state()
+			go_to(wander_controller.target_position, delta)
+			if global_position.distance_to(wander_controller.target_position) <= 4:
+				reset_state()
+			
 		STATE.CHASE:
 			chase(delta)
 			
-	# Ewwwwwwwwww
+	var __ = move_and_slide(velocity)
+	# Ewwwwwwwwwwwwwwwww
+
+func go_to(position: Vector2, delta) -> void:
+	var direction = global_position.direction_to(position)
+	velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
+	sprite.flip_h = velocity.x < 0
+
+func reset_state() -> void:
+	state = pick_random_state([STATE.IDLE, STATE.WANDER])
+	wander_controller.start_timer(rand_range(1, 3))
 
 func seek_player() -> void:
 	if player_detection_zone.can_see_player():
 		state = STATE.CHASE
 
+func pick_random_state(state_list : Array) -> int:
+	state_list.shuffle()
+	return state_list.front()
+
 func chase(delta) -> void:
 	var player = player_detection_zone.player
 	if player != null:
-		var direction = (player.global_position - global_position).normalized()
-		velocity = velocity.move_toward(direction * max_speed, acceleration * delta)
-		
-		sprite.flip_h = velocity.x < 0
+		go_to(player.global_position, delta)
 		
 		if soft_collision.is_colliding():
 			velocity += soft_collision.get_push_vector() * delta * 400
 		
-		var __ = move_and_slide(velocity)
 
 func _create_death_FX() -> void:
 	death_FX = death_FX_scene.instance()

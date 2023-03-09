@@ -39,6 +39,7 @@ func get_direction() -> Vector2: return direction
 #### BUILT-IN ####
 
 func _ready() -> void:
+	randomize()
 	var __ = stats.connect("no_health", self, "queue_free")
 	animation_tree.active = true
 
