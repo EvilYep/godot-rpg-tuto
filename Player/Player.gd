@@ -6,6 +6,7 @@ onready var animation_player: AnimationPlayer = $AnimationPlayer
 onready var animation_tree: AnimationTree = $AnimationTree
 onready var animation_state = animation_tree.get("parameters/playback")
 onready var sword_hitbox = $HitboxPivot/SwordHitBox
+onready var hurt_box: Area2D = $HurtBox
 
 const ACCELERATION := 500
 const MAX_SPEED := 100
@@ -23,6 +24,7 @@ var state = STATE.RUN
 var direction := Vector2.ZERO setget set_direction, get_direction
 var velocity : Vector2
 var roll_vector := Vector2.DOWN
+var stats := PlayerStats
 
 #### ACCESSORS ####
 
@@ -37,6 +39,7 @@ func get_direction() -> Vector2: return direction
 #### BUILT-IN ####
 
 func _ready() -> void:
+	var __ = stats.connect("no_health", self, "queue_free")
 	animation_tree.active = true
 
 func _process(_delta: float) -> void:
@@ -104,3 +107,7 @@ func roll_animation_finished() -> void:
 	state = STATE.RUN
 
 # This code is ugly AF, I know
+
+func _on_HurtBox_area_entered(_area: Area2D) -> void:
+	stats.health -= 1
+	hurt_box.start_invincibility(0.5)
