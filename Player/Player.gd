@@ -112,8 +112,9 @@ func roll_animation_finished() -> void:
 # This code is ugly AF, I know
 
 func _on_HurtBox_area_entered(area: Area2D) -> void:
-	stats.health -= area.damage
-	hurt_box.start_invincibility(0.5)
+	if !hurt_box.invincible:
+		stats.health -= area.damage
+		hurt_box.start_invincibility(0.5)
 
 func _on_HurtBox_invincibility_started() -> void:
 	blink_animation_player.play("Start")

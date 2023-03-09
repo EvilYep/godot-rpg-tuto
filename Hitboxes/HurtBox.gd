@@ -4,6 +4,7 @@ export(bool) var show_hit = true
 export(Vector2) var offset = Vector2.ZERO
 
 onready var timer: Timer = $Timer
+onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 var hit_FX_scene = preload("res://Effects/HitEffect.tscn")
 var hit_FX
 var invincible = false setget set_invincible
@@ -35,7 +36,7 @@ func _on_Timer_timeout() -> void:
 	self.invincible = false
 
 func _on_HurtBox_invincibility_ended() -> void:
-	set_deferred("monitorable", false)
+	collision_shape_2d.disabled = false
 
 func _on_HurtBox_invincibility_started() -> void:
-	set_deferred("monitorable", true)
+	collision_shape_2d.set_deferred("disabled", true)
